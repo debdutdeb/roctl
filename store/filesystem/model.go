@@ -1,7 +1,7 @@
 package filesystem
 
+import "roctl/models"
+
 type FilesystemStore struct {
-	Deployments []struct {
-		ContainerName string `json:"container_name,omitempty"`
-	} `json:"deployments,omitempty"`
+	Deployments []models.DeploymentsStore `json:"deployments,omitempty"`
 }

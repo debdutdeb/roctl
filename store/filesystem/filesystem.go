@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"roctl/models"
 )
 
 // store in ~/.roctl.json ?
@@ -28,12 +29,10 @@ func NewFilesystemStore(storageFile string) (*FilesystemStore, error) {
 	return &store, nil
 }
 
-func (s *FilesystemStore) AddDeployment(containerName string) error {
+func (s *FilesystemStore) AddDeployment(name, _type string) error {
 	// only reaches this if deployment is successful
 	// no need to check for name collisions
-	s.Deployments = append(s.Deployments, struct {
-		ContainerName string `json:"container_name,omitempty"`
-	}{ContainerName: containerName})
+	s.Deployments = append(s.Deployments, models.DeploymentsStore{Name: name, Type: _type})
 	return s.refresh()
 }
 
@@ -49,4 +48,17 @@ func (s FilesystemStore) refresh() error {
 	}
 
 	return nil
+}
+
+func (s *FilesystemStore) DeleteDeployment(name string) error {
+	var newDeploymentList []models.DeploymentsStore
+	for idx, deployment := range s.Deployments {
+		if deployment.Name == name {
+			newDeploymentList = s.Deployments[:idx-1]
+			newDeploymentList = append(newDeploymentList, s.Deployments[idx+1:]...)
+			break
+		}
+	}
+	s.Deployments = newDeploymentList
+	return s.refresh()
 }

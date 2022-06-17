@@ -1,8 +1,11 @@
 package models
 
 type Store interface {
-	create()
-	insert()
-	delete()
-	update()
+	AddDeployment(name string) error
+	DeleteDeployment(name string) error
+}
+
+type DeploymentsStore struct {
+	Name string `json:"name,omitempty"`
+	Type string `json:"type,omitempty"`
 }
